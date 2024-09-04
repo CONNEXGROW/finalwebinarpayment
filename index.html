@@ -133,11 +133,12 @@
     </style>
     <script type="text/javascript">
         $(document).ready(function() {
-            const paymentAmount = 1; // Replace 100 with the amount you want users to pay
-    
+            const paymentAmount = 1; // Replace 1 with the amount you want users to pay
+            const scriptUrl = ' https://script.google.com/macros/s/AKfycbwt5luweNuwRuSzIv8C9mqUcXpAr4fbKOJHr39EzW99oLIwYmOb7rLcEq6qaqEPZMk/exec'; // Replace with your deployed Google Apps Script URL
+
             function validateFields() {
                 let isValid = true;
-    
+
                 $(".form input").each(function() {
                     if ($(this).val().trim() === "") {
                         $(this).next(".error").show();
@@ -146,25 +147,29 @@
                         $(this).next(".error").hide();
                     }
                 });
-    
+
                 return isValid;
             }
-    
+
             function submitForm() {
                 $.ajax({
-                    url: 'https://formspree.io/f/xgvwqega',
+                    url: scriptUrl,
                     method: 'POST',
                     data: $(".form").serialize(),
-                    dataType: 'json',
-                    success: function() {
-                        window.location.href = "thank_you.html"; // Redirect to thank you page
+                    dataType: 'text',
+                    success: function(response) {
+                        if (response.includes('Success')) {
+                            window.location.href = "thank_you.html"; // Redirect to thank you page
+                        } else {
+                            alert("There was an error submitting the form. Please try again.");
+                        }
                     },
                     error: function() {
                         alert("There was an error submitting the form. Please try again.");
                     }
                 });
             }
-    
+
             $(".generate_qr").click(function(event) {
                 event.preventDefault(); // Prevent form submission
                 if (validateFields()) {
@@ -174,21 +179,21 @@
                     var link = `upi://pay?pa=9471314033@ybl&am=${paymentAmount}&tn=Payment for Webinar&pn=ConnexGrow`;
                     var upi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
                     $(".get_qr").attr("src", upi);
-    
+
                     // Show warning message
                     $(".warning").html(`
                         <p>Please note: If you press 'DONE' without completing the payment, it will not be accepted. We will verify every transaction from our bank statements. Please ensure all details are filled correctly. If you think you have entered something wrong before making the payment, kindly refresh the page.</p>
                         <p>We are not using other brands' payment gateways as this would increase the cost of our webinars. Therefore, we have developed our own payment process to keep prices affordable for you.</p>
                     `).show();
-    
+
                     // Start a 5-minute countdown timer
                     var timerDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
                     var endTime = Date.now() + timerDuration;
-    
+
                     function updateTimer() {
                         var now = Date.now();
                         var remaining = endTime - now;
-    
+
                         if (remaining <= 0) {
                             clearInterval(timerInterval);
                             $(".timer").text("Time's up!");
@@ -199,24 +204,23 @@
                             $(".timer").text(`${minutes}m ${seconds}s`);
                         }
                     }
-    
+
                     var timerInterval = setInterval(updateTimer, 1000);
                     updateTimer(); // Initial call
-    
+
                     // Show the "Done" button and status message
                     $(".payment-status").show();
                 } else {
                     alert("Please fill in all required fields.");
                 }
             });
-    
+
             $(".done_payment").click(function(event) {
                 event.preventDefault(); // Prevent default form action
                 submitForm();
             });
         });
     </script>
-    
 </head>
 <body>
     <section>
@@ -224,7 +228,7 @@
         <p class="disclaimer">
             Please ensure all details are filled in accurately. ConnexGrow is not responsible for any issues or losses that may arise from incorrect information provided in this form.
         </p>
-        <form action="https://formspree.io/f/xgvwqega" method="POST" class="form">
+        <form class="form">
             <div class="flex m20">
                 <label>Full Name*</label>
                 <input type="text" name="name" placeholder="Full Name" class="m10 name" required>
@@ -261,6 +265,5 @@
             </div>
         </div>
     </section>
-    
 </body>
 </html>
