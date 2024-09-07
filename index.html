@@ -228,31 +228,54 @@
         <p class="disclaimer">
             Please ensure all details are filled in accurately. ConnexGrow is not responsible for any issues or losses that may arise from incorrect information provided in this form.
         </p>
-        <form class="form">
-            <div class="flex m20">
-                <label>Full Name*</label>
-                <input type="text" name="name" placeholder="Full Name" class="m10 name" required>
-                <div class="error">This field is required</div>
-            </div>
-            <div class="flex m20">
-                <label>UPI ID which you will use for payment*</label>
-                <input type="text" name="upi" placeholder="Ex- UPI ID" class="m10 number" required>
-                <div class="error">This field is required</div>
-            </div>
-            <div class="flex m20">
-                <label>ConnexGrow Email ID*</label>
-                <input type="text" name="connex_email" placeholder="Ex- your.email@example.com" class="m10 connex_email" required>
-                <div class="error">This field is required</div>
-            </div>
-            <div class="flex m20">
-                <label>Email which you will use to join Google Meet*</label>
-                <input type="email" name="email" placeholder="Email" class="m10 email" required>
-                <div class="error">This field is required</div>
-            </div>
-            <div class="flex m20">
-                <button type="button" class="generate_qr">NEXT</button>
-            </div>
-        </form>
+   <form class="form">
+    <div class="flex m20">
+        <label>Full Name*</label>
+        <input type="text" name="name" placeholder="Full Name" class="m10 name" required>
+        <div class="error">This field is required</div>
+    </div>
+    <div class="flex m20">
+        <label>UPI ID which you will use for payment*</label>
+        <input type="text" name="upi" placeholder="Ex- UPI ID" class="m10 number" required>
+        <div class="error">This field is required</div>
+    </div>
+    <div class="flex m20">
+        <label>ConnexGrow Email ID*</label>
+        <input type="text" name="connex_email" placeholder="Ex- your.email@example.com" class="m10 connex_email" required>
+        <div class="error">This field is required</div>
+    </div>
+    <div class="flex m20">
+        <label>Email which you will use to join Google Meet*</label>
+        <input type="email" name="email" placeholder="Email" class="m10 email" required>
+        <div class="error email-error" style="display:none;">Please enter a valid email address</div>
+    </div>
+    <div class="flex m20">
+        <button type="button" class="generate_qr">NEXT</button>
+    </div>
+</form>
+
+<script>
+    document.querySelector('.generate_qr').addEventListener('click', function() {
+        // Get the email input field
+        const emailField = document.querySelector('input[name="email"]');
+        const emailError = document.querySelector('.email-error');
+
+        // Email validation regex pattern
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        // Validate the email field
+        if (!emailPattern.test(emailField.value)) {
+            // Show error if email is not valid
+            emailError.style.display = 'block';
+            emailField.focus();
+        } else {
+            // Hide error if email is valid and proceed
+            emailError.style.display = 'none';
+            // Submit the form or proceed to the next step here
+        }
+    });
+</script>
+
         <div class="qr_code m20">
             <p>Scan the QR Code with any UPI App and pay the amount.</p>
             <center><img src="" alt="QR CODE" class="get_qr m10"></center>
